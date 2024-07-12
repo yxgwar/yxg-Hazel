@@ -33,7 +33,7 @@ namespace Hazel {
 
 		std::string ToString() const override {
 			std::stringstream ss;
-			ss << "MouseMovedEvent: " << m_XOffest << ", " << m_YOffest;
+			ss << "MouseScrolledEvent: " << m_XOffest << ", " << m_YOffest;
 			return ss.str();
 		}
 
