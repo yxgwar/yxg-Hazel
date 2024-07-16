@@ -2,6 +2,7 @@
 #include "Application.h"
 
 #include "Hazel/Log.h"
+#include "Input.h"
 
 #include <Glad/glad.h>
 
@@ -51,6 +52,9 @@ namespace Hazel {
 			for (auto layer : m_LayerStack) {
 				layer->OnUpdate();
 			}
+
+			auto [x, y] = Input::GetMousePos();
+			HZ_CORE_TRACE("{0}, {1}", x, y);
 
 			m_Window->OnUpdate();
 		}
