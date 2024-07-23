@@ -31,4 +31,15 @@ namespace Hazel {
 		HZ_CORE_ASSERT(false, "Unknown RendererAPI!");
 		return nullptr;
 	}
+
+	void BufferLayout::CalculateOffestsAndStride()
+	{
+		uint32_t offest = 0;
+		m_Stride = 0;
+		for (auto& element : m_Elements) {
+			element.Offest = offest;
+			offest += element.Size;
+			m_Stride += element.Size;
+		}
+	}
 }
