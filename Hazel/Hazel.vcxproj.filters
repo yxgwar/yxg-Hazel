@@ -93,13 +93,31 @@
     <ClInclude Include="src\Hazel\MouseButtonCodes.h">
       <Filter>src\Hazel</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hazel\Render\Buffer.h">
+      <Filter>src\Hazel\Render</Filter>
+    </ClInclude>
     <ClInclude Include="src\Hazel\Render\GraphicsContext.h">
+      <Filter>src\Hazel\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hazel\Render\Renderer.h">
+      <Filter>src\Hazel\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hazel\Render\Shader.h">
+      <Filter>src\Hazel\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Hazel\Render\VertexArray.h">
       <Filter>src\Hazel\Render</Filter>
     </ClInclude>
     <ClInclude Include="src\Hazel\Window.h">
       <Filter>src\Hazel</Filter>
     </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGlVertexArray.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsInput.h">
@@ -1379,7 +1397,25 @@
     <ClCompile Include="src\Hazel\Log.cpp">
       <Filter>src\Hazel</Filter>
     </ClCompile>
+    <ClCompile Include="src\Hazel\Render\Buffer.cpp">
+      <Filter>src\Hazel\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hazel\Render\Renderer.cpp">
+      <Filter>src\Hazel\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hazel\Render\Shader.cpp">
+      <Filter>src\Hazel\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Hazel\Render\VertexArray.cpp">
+      <Filter>src\Hazel\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGlVertexArray.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp">
