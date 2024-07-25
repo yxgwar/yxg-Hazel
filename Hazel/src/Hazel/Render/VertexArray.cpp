@@ -7,10 +7,10 @@ namespace Hazel {
 	VertexArray* VertexArray::Create()
 	{
 		switch (Renderer::GetAPI()) {
-		case RendererAPI::None:
+		case RendererAPI::API::None:
 			HZ_CORE_ASSERT(false, "Not Supported!");
 			return nullptr;
-		case RendererAPI::OpenGl:
+		case RendererAPI::API::OpenGl:
 			return new OpenGlVertexArray();
 		}
 
