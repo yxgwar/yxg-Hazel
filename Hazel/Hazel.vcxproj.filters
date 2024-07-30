@@ -1377,6 +1377,11 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="src\Hazel\Render\OrthographicCamera.h" />
+    <ClInclude Include="src\Hazel\Render\RenderCommand.h" />
+    <ClInclude Include="src\Hazel\Render\RendererAPI.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
+    <ClInclude Include="src\Hazel\Core\Timestep.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Hazel\Application.cpp">
@@ -1427,5 +1432,9 @@
     <ClCompile Include="src\hzpch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Hazel\Render\OrthographicCamera.cpp" />
+    <ClCompile Include="src\Hazel\Render\RenderCommand.cpp" />
+    <ClCompile Include="src\Hazel\Render\RendererAPI.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
   </ItemGroup>
 </Project>

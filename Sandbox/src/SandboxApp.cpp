@@ -124,25 +124,27 @@ public:
 		m_Shader2.reset(new Hazel::Shader(vertexSrc2, fragmentSrc2));
 	}
 
-	void OnUpdate() override {
+	void OnUpdate(Hazel::Timestep ts) override {
+		HZ_TRACE("Delta time: {0}s", ts.GetSeconds());
+
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_LEFT)) {
-			m_CameraPosition.x -= m_CameraSpeed;
+			m_CameraPosition.x -= m_CameraSpeed * ts;
 		}
 		else if (Hazel::Input::IsKeyPressed(HZ_KEY_RIGHT)) {
-			m_CameraPosition.x += m_CameraSpeed;
+			m_CameraPosition.x += m_CameraSpeed * ts;
 		}
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_UP)) {
-			m_CameraPosition.y += m_CameraSpeed;
+			m_CameraPosition.y += m_CameraSpeed * ts;
 		}
 		else if (Hazel::Input::IsKeyPressed(HZ_KEY_DOWN)) {
-			m_CameraPosition.y -= m_CameraSpeed;
+			m_CameraPosition.y -= m_CameraSpeed * ts;
 		}
 
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_Q)) {
-			m_CameraRotation += m_CameraRotationSpeed;
+			m_CameraRotation += m_CameraRotationSpeed * ts;
 		}
 		else if (Hazel::Input::IsKeyPressed(HZ_KEY_E)) {
-			m_CameraRotation -= m_CameraRotationSpeed;
+			m_CameraRotation -= m_CameraRotationSpeed * ts;
 		}
 
 		Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
@@ -172,9 +174,9 @@ private:
 
 	Hazel::OrthographicCamera m_Camera;
 	glm::vec3 m_CameraPosition;
-	float m_CameraSpeed = 0.1f;
+	float m_CameraSpeed = 1.0f;
 	float m_CameraRotation = 0.0f;
-	float m_CameraRotationSpeed = 2.0f;
+	float m_CameraRotationSpeed = 20.0f;
 };
 
 class Sandbox : public Hazel::Application {
