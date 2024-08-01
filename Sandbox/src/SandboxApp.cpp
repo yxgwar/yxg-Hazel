@@ -39,19 +39,20 @@ public:
 
 		m_SquareVA.reset(Hazel::VertexArray::Create());
 
-		float squareVertices[3 * 4] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			-0.5f,  0.5f, 0.0f
+		float squareVertices[5 * 4] = {
+			-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+			 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+			 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+			-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 		};
 
 		Hazel::Ref<Hazel::VertexBuffer> squareVB;
 		squareVB.reset(Hazel::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 
 		squareVB->SetLayout({
-			{Hazel::ShaderDataType::Float3, "a_Position"}
-			});
+			{Hazel::ShaderDataType::Float3, "a_Position"},
+			{Hazel::ShaderDataType::Float2, "a_TexCoord"}
+		});
 		m_SquareVA->AddVertexBuffer(squareVB);
 
 		unsigned int squareIndices[6] = { 0,1,2,2,3,0 };
@@ -130,10 +131,50 @@ public:
 		)";
 
 		m_Shader2.reset(Hazel::Shader::Create(vertexSrc2, fragmentSrc2));
+
+		std::string textureVertexSrc = R"(
+			#version 460 core
+
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec2 a_TexCoord;
+
+			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
+
+			out vec2 v_TexCoord;
+			
+			void main()
+			{
+				v_TexCoord = a_TexCoord;
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
+			}
+		)";
+
+		std::string textureFragmentSrc = R"(
+			#version 460 core
+
+			layout(location = 0) out vec4 color;
+
+			in vec2 v_TexCoord;
+
+			uniform sampler2D u_Texture;
+			
+			void main()
+			{
+				color = texture(u_Texture, v_TexCoord);
+			}
+		)";
+
+		m_TextureShader.reset(Hazel::Shader::Create(textureVertexSrc, textureFragmentSrc));
+
+		m_Texture = Hazel::Texture2D::Create("");
+
+		std::dynamic_pointer_cast<Hazel::OpenGlShader>(m_TextureShader)->Bind();
+		std::dynamic_pointer_cast<Hazel::OpenGlShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
 	}
 
 	void OnUpdate(Hazel::Timestep ts) override {
-		HZ_TRACE("Delta time: {0}s", ts.GetSeconds());
+		//HZ_TRACE("Delta time: {0}s", ts.GetSeconds());
 
 		if (Hazel::Input::IsKeyPressed(HZ_KEY_LEFT)) {
 			m_CameraPosition.x -= m_CameraSpeed * ts;
@@ -192,6 +233,9 @@ public:
 				Hazel::Renderer::Submit(m_SquareVA, m_Shader2, transform);
 			}
 		}
+		m_Texture->Bind();
+		Hazel::Renderer::Submit(m_SquareVA, m_TextureShader, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+
 		//Hazel::Renderer::Submit(m_VertexArray, m_Shader);
 
 		Hazel::Renderer::EndScene();
@@ -210,8 +254,10 @@ private:
 	Hazel::Ref<Hazel::Shader> m_Shader;
 	Hazel::Ref<Hazel::VertexArray> m_VertexArray;
 
-	Hazel::Ref<Hazel::Shader> m_Shader2;
+	Hazel::Ref<Hazel::Shader> m_Shader2, m_TextureShader;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
+
+	Hazel::Ref<Hazel::Texture2D> m_Texture;
 
 	Hazel::OrthographicCamera m_Camera;
 	glm::vec3 m_CameraPosition;
