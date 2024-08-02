@@ -132,43 +132,10 @@ public:
 
 		m_Shader2.reset(Hazel::Shader::Create(vertexSrc2, fragmentSrc2));
 
-		std::string textureVertexSrc = R"(
-			#version 460 core
+		m_TextureShader.reset(Hazel::Shader::Create("assets/shaders/Texture.glsl"));
 
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec2 a_TexCoord;
-
-			uniform mat4 u_ViewProjection;
-			uniform mat4 u_Transform;
-
-			out vec2 v_TexCoord;
-			
-			void main()
-			{
-				v_TexCoord = a_TexCoord;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
-			}
-		)";
-
-		std::string textureFragmentSrc = R"(
-			#version 460 core
-
-			layout(location = 0) out vec4 color;
-
-			in vec2 v_TexCoord;
-
-			uniform sampler2D u_Texture;
-			
-			void main()
-			{
-				color = texture(u_Texture, v_TexCoord);
-			}
-		)";
-
-		m_TextureShader.reset(Hazel::Shader::Create(textureVertexSrc, textureFragmentSrc));
-
-		m_Texture = Hazel::Texture2D::Create("");
-		m_TextureAlpha = Hazel::Texture2D::Create("");
+		m_Texture = Hazel::Texture2D::Create("assets/textures/2.png");
+		m_TextureAlpha = Hazel::Texture2D::Create("assets/textures/1.png");
 
 		std::dynamic_pointer_cast<Hazel::OpenGlShader>(m_TextureShader)->Bind();
 		std::dynamic_pointer_cast<Hazel::OpenGlShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
@@ -223,6 +190,7 @@ public:
 		glm::vec4 redColor(0.8f, 0.2f, 0.2f, 1.0f);
 		glm::vec4 blueColor(0.2f, 0.2f, 0.8f, 1.0f);
 
+		std::dynamic_pointer_cast<Hazel::OpenGlShader>(m_Shader2)->Bind();
 		std::dynamic_pointer_cast<Hazel::OpenGlShader>(m_Shader2)->UploadUniformFloat4("u_Color", m_SquareColor);
 
 		for (int x = 0; x < 20; x++)
