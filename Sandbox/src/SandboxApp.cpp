@@ -96,7 +96,7 @@ public:
 			}
 		)";
 
-		m_Shader.reset(Hazel::Shader::Create(vertexSrc, fragmentSrc));
+		m_Shader = Hazel::Shader::Create("VertexTriangle", vertexSrc, fragmentSrc);
 
 		std::string vertexSrc2 = R"(
 			#version 460 core
@@ -130,15 +130,15 @@ public:
 			}
 		)";
 
-		m_Shader2.reset(Hazel::Shader::Create(vertexSrc2, fragmentSrc2));
+		m_Shader2 = Hazel::Shader::Create("FlatColor", vertexSrc2, fragmentSrc2);
 
-		m_TextureShader.reset(Hazel::Shader::Create("assets/shaders/Texture.glsl"));
+		auto textureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
 
 		m_Texture = Hazel::Texture2D::Create("assets/textures/2.png");
 		m_TextureAlpha = Hazel::Texture2D::Create("assets/textures/1.png");
 
-		std::dynamic_pointer_cast<Hazel::OpenGlShader>(m_TextureShader)->Bind();
-		std::dynamic_pointer_cast<Hazel::OpenGlShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+		std::dynamic_pointer_cast<Hazel::OpenGlShader>(textureShader)->Bind();
+		std::dynamic_pointer_cast<Hazel::OpenGlShader>(textureShader)->UploadUniformInt("u_Texture", 0);
 	}
 
 	void OnUpdate(Hazel::Timestep ts) override {
@@ -202,11 +202,13 @@ public:
 				Hazel::Renderer::Submit(m_SquareVA, m_Shader2, transform);
 			}
 		}
+		auto textureShader = m_ShaderLibrary.Get("Texture");
+
 		m_Texture->Bind();
-		Hazel::Renderer::Submit(m_SquareVA, m_TextureShader, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Hazel::Renderer::Submit(m_SquareVA, textureShader, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		m_TextureAlpha->Bind();
-		Hazel::Renderer::Submit(m_SquareVA, m_TextureShader, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		Hazel::Renderer::Submit(m_SquareVA, textureShader, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
 
 		//Hazel::Renderer::Submit(m_VertexArray, m_Shader);
 
@@ -223,10 +225,12 @@ public:
 
 	}
 private:
+	Hazel::ShaderLibrary m_ShaderLibrary;
+
 	Hazel::Ref<Hazel::Shader> m_Shader;
 	Hazel::Ref<Hazel::VertexArray> m_VertexArray;
 
-	Hazel::Ref<Hazel::Shader> m_Shader2, m_TextureShader;
+	Hazel::Ref<Hazel::Shader> m_Shader2;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;
 
 	Hazel::Ref<Hazel::Texture2D> m_Texture, m_TextureAlpha;
