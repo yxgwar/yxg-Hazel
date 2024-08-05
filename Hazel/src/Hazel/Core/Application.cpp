@@ -1,8 +1,8 @@
 #include "hzpch.h"
 #include "Application.h"
 
-#include "Hazel/Log.h"
-#include "Input.h"
+#include "Hazel/Core/Log.h"
+#include "Hazel/Core/Input.h"
 #include "Hazel/Render/Renderer.h"
 
 #include <GLFW/glfw3.h>
@@ -42,9 +42,10 @@ namespace Hazel {
 	void Application::OnEvent(Event& e) {
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(OnWindowClose));
+		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(OnWindowResize));
 
-		if(e.GetEventType() == EventType::KeyPressed)
-			HZ_CORE_TRACE("{0}", e.ToString());
+		//if(e.GetEventType() == EventType::KeyPressed)
+		//	HZ_CORE_TRACE("{0}", e.ToString());
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();) {
 			(*--it)->OnEvent(e);
@@ -57,8 +58,12 @@ namespace Hazel {
 			float time = glfwGetTime();
 			Timestep timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
-			for (auto layer : m_LayerStack) {
-				layer->OnUpdate(timestep);
+
+			if (!m_Minimized) {
+				for (auto layer : m_LayerStack) {
+					layer->OnUpdate(timestep);
+				}
+
 			}
 
 			m_ImGuiLayer->Begin();
@@ -74,5 +79,18 @@ namespace Hazel {
 	bool Application::OnWindowClose(WindowCloseEvent& e) {
 		m_Running = false;
 		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+		if (e.GetWidth() == 0 || e.GetHeight() == 0) {
+			m_Minimized = true;
+			return false;
+		}
+
+		m_Minimized = false;
+		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+
+		return false;
 	}
 }
