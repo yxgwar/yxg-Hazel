@@ -28,7 +28,7 @@ std::mt19937 Random::s_RandomEngine;
 std::uniform_int_distribution<std::mt19937::result_type> Random::s_Distribution;
 
 ParticleSystem::ParticleSystem(uint32_t maxParticles)
-	:m_PoolIndex(maxParticles - 1)
+	:m_PoolIndex(0)
 {
 	m_ParticlePool.resize(maxParticles);
 }
@@ -62,12 +62,13 @@ void ParticleSystem::OnRender(Hazel::OrthographicCamera& camera)
 
 		// Fade away particles
 		float life = particle.LifeRemaining / particle.LifeTime;
+		life = life >= 0.0f ? life : 0.0f;
 		glm::vec4 color = glm::lerp(particle.ColorEnd, particle.ColorBegin, life);
-		color.a = color.a * life;
+		//color.a = color.a * life;
 
 		float size = glm::lerp(particle.SizeEnd, particle.SizeBegin, life);
 
-		Hazel::Renderer2D::DrawRotatedQuad(particle.Position, { size, size }, particle.Rotation, color);
+		Hazel::Renderer2D::DrawRotatedQuad({ particle.Position.x, particle.Position.y, 0.5f }, { size, size }, particle.Rotation, color);
 	}
 	Hazel::Renderer2D::EndScene();
 }
@@ -93,5 +94,5 @@ void ParticleSystem::Emit(const ParticleProps& particleProps)
 	particle.SizeBegin = particleProps.SizeBegin + particleProps.SizeVariation * (Random::Float() - 0.5f);
 	particle.SizeEnd = particleProps.SizeEnd;
 
-	m_PoolIndex = --m_PoolIndex % m_ParticlePool.size();
+	m_PoolIndex = ++m_PoolIndex % m_ParticlePool.size();
 }

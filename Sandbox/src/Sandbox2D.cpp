@@ -32,29 +32,19 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts)
 
 	Hazel::Renderer2D::ResetStats();
 
-	Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+	Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 	Hazel::RenderCommand::Clear();
 
 	static float rotation = 0.0f;
 	rotation += ts * 20;
 
-	//Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-	//Hazel::Renderer2D::DrawRotatedQuad({ -0.5f, 0.0f }, { 0.5f, 0.5f }, glm::radians(rotation), { 0.2f,0.2f,0.8f,1.0f });
-	////Hazel::Renderer2D::DrawQuad({ -0.5f, 0.0f }, { 0.5f, 0.5f }, { 0.2f,0.2f,0.8f,1.0f });
-	//Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, { 0.8f,0.2f,0.2f,1.0f });
-	//Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, m_Texture, 10.0f);
-	//Hazel::Renderer2D::EndScene();
-
-	//Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-	//for (float y = -5.0f; y < 5.0f; y += 0.5f)
-	//{
-	//	for (float x = -5.0f; x < 5.0f; x += 0.5f)
-	//	{
-	//		glm::vec4 color = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f };
-	//		Hazel::Renderer2D::DrawQuad({ x, y }, { 0.45f, 0.45f }, color);
-	//	}
-	//}
-	//Hazel::Renderer2D::EndScene();
+	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
+	Hazel::Renderer2D::DrawRotatedQuad({ -0.5f, 0.0f }, { 0.5f, 0.5f }, glm::radians(rotation), { 0.2f,0.2f,0.8f,1.0f });
+	//Hazel::Renderer2D::DrawQuad({ -0.5f, 0.0f }, { 0.5f, 0.5f }, { 0.2f,0.2f,0.8f,1.0f });
+	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, { 0.8f,0.2f,0.2f,1.0f });
+	Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, m_Texture, 10.0f);
+	Hazel::Renderer2D::EndScene();
+	
 	if (Hazel::Input::IsMouseButtonPressed(HZ_MOUSE_BUTTON_LEFT))
 	{
 		auto [x, y] = Hazel::Input::GetMousePos();
@@ -72,6 +62,16 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts)
 
 	m_ParticleSystem.OnUpdate(ts);
 	m_ParticleSystem.OnRender(m_CameraController.GetCamera());
+	Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
+	for (float y = -5.0f; y < 5.0f; y += 0.5f)
+	{
+		for (float x = -5.0f; x < 5.0f; x += 0.5f)
+		{
+			glm::vec4 color = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f };
+			Hazel::Renderer2D::DrawQuad({ x, y, 1.0f }, { 0.45f, 0.45f }, color);
+		}
+	}
+	Hazel::Renderer2D::EndScene();
 }
 
 void Sandbox2D::OnImGuiRender()
