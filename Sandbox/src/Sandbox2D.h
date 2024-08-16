@@ -19,6 +19,7 @@ public:
 private:
 	Hazel::OrthographicCameraController m_CameraController;
 
+	Hazel::Ref<Hazel::FrameBuffer> m_FrameBuffer;
 	Hazel::Ref<Hazel::Shader> m_Shader;
 	Hazel::Ref<Hazel::Texture2D> m_Texture;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVA;

@@ -12,13 +12,18 @@ void Sandbox2D::OnAttach()
 {
 	m_Texture = Hazel::Texture2D::Create("assets/textures/2.png");
 
-	m_Particle.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
+	Hazel::FrameBufferSpecification fbSpec;
+	fbSpec.Width = 1920;
+	fbSpec.Height = 1080;
+	m_FrameBuffer = Hazel::FrameBuffer::Create(fbSpec);
+
+	/*m_Particle.ColorBegin = { 254 / 255.0f, 212 / 255.0f, 123 / 255.0f, 1.0f };
 	m_Particle.ColorEnd = { 254 / 255.0f, 109 / 255.0f, 41 / 255.0f, 1.0f };
 	m_Particle.SizeBegin = 0.5f, m_Particle.SizeVariation = 0.3f, m_Particle.SizeEnd = 0.0f;
 	m_Particle.LifeTime = 1.0f;
 	m_Particle.Velocity = { 0.0f, 0.0f };
 	m_Particle.VelocityVariation = { 3.0f, 1.0f };
-	m_Particle.Position = { 0.0f, 0.0f };
+	m_Particle.Position = { 0.0f, 0.0f };*/
 }
 
 void Sandbox2D::OnDetach()
@@ -31,6 +36,7 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts)
 	m_CameraController.OnUpdate(ts);
 
 	Hazel::Renderer2D::ResetStats();
+	m_FrameBuffer->Bind();
 
 	Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 	Hazel::RenderCommand::Clear();
@@ -72,12 +78,14 @@ void Sandbox2D::OnUpdate(Hazel::Timestep ts)
 		}
 	}
 	Hazel::Renderer2D::EndScene();
+
+	m_FrameBuffer->Unbind();
 }
 
 void Sandbox2D::OnImGuiRender()
 {
 	// Note: Switch this to true to enable dockspace
-	static bool dockingEnabled = false;
+	static bool dockingEnabled = true;
 	if (dockingEnabled)
 	{
 		static bool dockspaceOpen = true;
@@ -150,8 +158,8 @@ void Sandbox2D::OnImGuiRender()
 
 		ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
 
-		uint32_t textureID = m_Texture->GetRendererID();
-		ImGui::Image((void*)textureID, ImVec2{ 256.0f, 256.0f });
+		uint32_t textureID = m_FrameBuffer->GetColorAttachmentRendererID();
+		ImGui::Image((void*)textureID, ImVec2{ 1920.0f, 1080.0f });
 		ImGui::End();
 
 		ImGui::End();
@@ -169,8 +177,8 @@ void Sandbox2D::OnImGuiRender()
 
 		ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
 
-		uint32_t textureID = m_Texture->GetRendererID();
-		ImGui::Image((void*)textureID, ImVec2{ 256.0f, 256.0f });
+		uint32_t textureID = m_FrameBuffer->GetColorAttachmentRendererID();
+		ImGui::Image((void*)textureID, ImVec2{ 1920.0f, 1080.0f });
 		ImGui::End();
 	}
 }
