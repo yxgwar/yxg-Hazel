@@ -21,6 +21,9 @@ namespace Hazel {
 		Ref<Shader> m_Shader;
 		Ref<Texture2D> m_Texture;
 		Ref<VertexArray> m_SquareVA;
+
+		glm::vec2 m_ViewportSize = { 0.0f, 0.0f };
+
 		glm::vec4 m_SquareColor = { 0.2f, 0.2f, 0.8f, 1.0f };
 	};
 
