@@ -10,16 +10,20 @@ namespace Hazel {
 	class HAZEL_API ImGuiLayer :public Layer {
 	public:
 		ImGuiLayer();
-		~ImGuiLayer();
+		~ImGuiLayer() = default;
 
 		void OnAttach() override;
 		void OnDetach() override;
-		void OnImGuiRender() override;
+		void OnEvent(Event& e) override;
+		//void OnImGuiRender() override;
 
 		void Begin();
 		void End();
 
+		void BlockEvents(bool block) { m_BlockEvents = block; }
+
 	private:
 		float m_Time = 0.0f;
+		bool m_BlockEvents = true;
 	};
 }
