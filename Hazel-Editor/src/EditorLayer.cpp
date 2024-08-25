@@ -11,12 +11,19 @@ namespace Hazel {
 
 	void EditorLayer::OnAttach()
 	{
-		m_Texture = Hazel::Texture2D::Create("assets/textures/2.png");
+		m_Texture = Texture2D::Create("assets/textures/2.png");
 
-		Hazel::FrameBufferSpecification fbSpec;
+		FrameBufferSpecification fbSpec;
 		fbSpec.Width = 1920;
 		fbSpec.Height = 1080;
-		m_FrameBuffer = Hazel::FrameBuffer::Create(fbSpec);
+		m_FrameBuffer = FrameBuffer::Create(fbSpec);
+
+		m_ActiveScene = CreateRef<Scene>();
+		auto square = m_ActiveScene->CreateEntity();
+		m_ActiveScene->Reg().emplace<TransformComponent>(square);
+		m_ActiveScene->Reg().emplace<SpriteRendererComponent>(square, glm::vec4{0.0f, 0.2f, 0.8f, 1.0f});
+
+		m_SquareEntity = square;
 	}
 
 	void EditorLayer::OnDetach()
@@ -24,37 +31,22 @@ namespace Hazel {
 
 	}
 
-	void EditorLayer::OnUpdate(Hazel::Timestep ts)
+	void EditorLayer::OnUpdate(Timestep ts)
 	{
 		if (m_ViewportFocused)
 			m_CameraController.OnUpdate(ts);
 
-		Hazel::Renderer2D::ResetStats();
+		Renderer2D::ResetStats();
 
 		m_FrameBuffer->Bind();
-		Hazel::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
-		Hazel::RenderCommand::Clear();
+		RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+		RenderCommand::Clear();
 
-		static float rotation = 0.0f;
-		rotation += ts * 20;
+		Renderer2D::BeginScene(m_CameraController.GetCamera());
 
-		Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-		Hazel::Renderer2D::DrawRotatedQuad({ -0.5f, 0.0f }, { 0.5f, 0.5f }, glm::radians(rotation), { 0.2f,0.2f,0.8f,1.0f });
-		//Hazel::Renderer2D::DrawQuad({ -0.5f, 0.0f }, { 0.5f, 0.5f }, { 0.2f,0.2f,0.8f,1.0f });
-		Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, { 0.8f,0.2f,0.2f,1.0f });
-		Hazel::Renderer2D::DrawQuad({ 0.0f, 0.0f, -0.1f }, { 10.0f, 10.0f }, m_Texture, 10.0f);
-		Hazel::Renderer2D::EndScene();
+		m_ActiveScene->OnUpdate(ts);
 
-		Hazel::Renderer2D::BeginScene(m_CameraController.GetCamera());
-		for (float y = -5.0f; y < 5.0f; y += 0.5f)
-		{
-			for (float x = -5.0f; x < 5.0f; x += 0.5f)
-			{
-				glm::vec4 color = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f };
-				Hazel::Renderer2D::DrawQuad({ x, y, 1.0f }, { 0.45f, 0.45f }, color);
-			}
-		}
-		Hazel::Renderer2D::EndScene();
+		Renderer2D::EndScene();
 
 		m_FrameBuffer->Unbind();
 	}
@@ -113,7 +105,7 @@ namespace Hazel {
 				// which we can't undo at the moment without finer window depth/z control.
 				//ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
 
-				if (ImGui::MenuItem("Exit")) Hazel::Application::Get().Close();
+				if (ImGui::MenuItem("Exit")) Application::Get().Close();
 				ImGui::EndMenu();
 			}
 
@@ -122,14 +114,15 @@ namespace Hazel {
 
 		ImGui::Begin("Settings");
 
-		auto stats = Hazel::Renderer2D::GetStats();
+		auto stats = Renderer2D::GetStats();
 		ImGui::Text("Renderer2D Stats:");
 		ImGui::Text("Draw Calls: %d", stats.DrawCalls);
 		ImGui::Text("Quads: %d", stats.QuadCount);
 		ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
-		ImGui::ColorEdit4("Square Color", glm::value_ptr(m_SquareColor));
+		auto& squareColor = m_ActiveScene->Reg().get<SpriteRendererComponent>(m_SquareEntity).Color;
+		ImGui::ColorEdit4("Square Color", glm::value_ptr(squareColor));
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
@@ -155,7 +148,7 @@ namespace Hazel {
 		ImGui::End();
 	}
 
-	void EditorLayer::OnEvent(Hazel::Event& e)
+	void EditorLayer::OnEvent(Event& e)
 	{
 		m_CameraController.OnEvent(e);
 	}
