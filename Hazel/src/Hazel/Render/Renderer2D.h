@@ -3,6 +3,7 @@
 #include "RenderCommand.h"
 #include "OrthographicCamera.h"
 #include "Texture.h"
+#include "Camera.h"
 
 namespace Hazel {
 	class Renderer2D
@@ -11,6 +12,7 @@ namespace Hazel {
 		static void Init();
 		static void Shutdown();
 
+		static void BeginScene(const Camera& camera, const glm::mat4& transform);
 		static void BeginScene(const OrthographicCamera& camera);
 		static void EndScene();
 		static void Flush();

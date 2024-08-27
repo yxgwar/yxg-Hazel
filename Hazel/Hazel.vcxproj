@@ -161,6 +161,7 @@
     <ClInclude Include="src\Hazel\Events\MouseEvent.h" />
     <ClInclude Include="src\Hazel\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Hazel\Render\Buffer.h" />
+    <ClInclude Include="src\Hazel\Render\Camera.h" />
     <ClInclude Include="src\Hazel\Render\FrameBuffer.h" />
     <ClInclude Include="src\Hazel\Render\GraphicsContext.h" />
     <ClInclude Include="src\Hazel\Render\OrthographicCamera.h" />
