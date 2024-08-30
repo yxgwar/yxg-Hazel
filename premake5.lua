@@ -142,7 +142,7 @@ project "Hazel-Editor"
         runtime "Release"
         optimize "on"
 
-        project "Sandbox"
+project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"
     language "C++"
@@ -161,7 +161,8 @@ project "Hazel-Editor"
         "Hazel/vendor/spdlog/include",
         "Hazel/src",
         "Hazel/vendor",
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+        "%{IncludeDir.entt}"
     }
 
     links{
