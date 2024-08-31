@@ -4,8 +4,10 @@
 #include "Hazel/Core/Timestep.h"
 
 namespace Hazel {
+	class Entity;
 	class Scene {
 		friend class Entity;
+		friend class SceneHierarchyPanel;
 	public:
 		Scene();
 		~Scene();
