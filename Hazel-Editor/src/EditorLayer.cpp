@@ -22,6 +22,10 @@ namespace Hazel {
 
 		auto square = m_ActiveScene->CreateEntity("Square");
 		square.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 0.2f, 0.8f, 1.0f });
+
+		auto redsquare = m_ActiveScene->CreateEntity("RedSquare");
+		redsquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
+		
 		m_SquareEntity = square;
 
 		m_CameraEntity = m_ActiveScene->CreateEntity("Camera");
