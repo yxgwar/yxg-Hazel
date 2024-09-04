@@ -14,7 +14,7 @@
 #include "Hazel/Render/OrthographicCamera.h"
 
 namespace Hazel {
-	class HAZEL_API Application
+	class Application
 	{
 	public:
 		Application(const std::string& name = "Hazel App");
