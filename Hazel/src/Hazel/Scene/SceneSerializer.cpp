@@ -98,7 +98,7 @@ namespace Hazel {
 
 		if (entity.HasComponent<TransformComponent>())
 		{
-			out << YAML::Key << "Transformation";
+			out << YAML::Key << "TransformComponent";
 			out << YAML::BeginMap;
 
 			auto& tc = entity.GetComponent<TransformComponent>();
