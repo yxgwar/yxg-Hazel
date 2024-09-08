@@ -48,8 +48,8 @@ namespace Hazel {
 		dispatcher.Dispatch<WindowCloseEvent>(HZ_BIND_EVENT_FN(Application::OnWindowClose));
 		dispatcher.Dispatch<WindowResizeEvent>(HZ_BIND_EVENT_FN(Application::OnWindowResize));
 
-		if(e.GetEventType() == EventType::KeyPressed)
-			HZ_CORE_TRACE("{0}", e.ToString());
+		//if(e.GetEventType() == EventType::KeyPressed)
+		//	HZ_CORE_TRACE("{0}", e.ToString());
 
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();) {
 			(*--it)->OnEvent(e);
