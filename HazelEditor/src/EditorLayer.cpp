@@ -4,6 +4,8 @@
 #include "Hazel/Scene/SceneSerializer.h"
 #include <Hazel/Utils/PlatformUtils.h>
 #include <ImGuizmo.h>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/matrix_decompose.hpp>
 #include "Hazel/Math/Math.h"
 
 namespace Hazel {
@@ -240,12 +242,13 @@ namespace Hazel {
 			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection), (ImGuizmo::OPERATION)m_GizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform), nullptr, snap ? snapValues : nullptr);
 			if (ImGuizmo::IsUsing())
 			{
-				glm::vec3 translation, rotation, scale;
-				Math::DecomposeTransform(transform, translation, rotation, scale);
+				glm::vec3 translation, scale, skew;
+				glm::quat rotation;
+				glm::vec4 perspective;
+				glm::decompose(transform, scale, rotation, translation, skew, perspective);
 				
-				glm::vec3 deltaRotation = rotation - tc.Rotation;
 				tc.Translation = translation;
-				tc.Rotation += deltaRotation;
+				tc.Rotation = rotation;
 				tc.Scale = scale;
 			}
 		}

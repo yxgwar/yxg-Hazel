@@ -20,7 +20,8 @@ namespace Hazel {
 
 	struct TransformComponent {
 		glm::vec3 Translation = { 0.0f, 0.0f, 0.0f };
-		glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
+		glm::quat Rotation = { 0.0f, 0.0f, 0.0f, 0.0f };
+		//glm::vec3 Rotation = { 0.0f, 0.0f, 0.0f };
 		glm::vec3 Scale = { 1.0f, 1.0f, 1.0f };
 
 		TransformComponent() = default;
@@ -30,10 +31,10 @@ namespace Hazel {
 
 		glm::mat4 GetTransform() const
 		{
-			glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
+			//glm::mat4 rotation = glm::toMat4(glm::quat(Rotation));
 
 			return glm::translate(glm::mat4(1.0f), Translation)
-				* rotation
+				* glm::mat4_cast(Rotation)
 				* glm::scale(glm::mat4(1.0f), Scale);
 		}
 	};

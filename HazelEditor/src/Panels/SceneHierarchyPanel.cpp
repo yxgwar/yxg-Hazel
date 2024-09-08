@@ -220,9 +220,12 @@ namespace Hazel {
 		DrawComponent<TransformComponent>("Transform", entity, [](auto& component)
 			{
 				DrawVec3Control("Translation", component.Translation);
-				glm::vec3 rotation = glm::degrees(component.Rotation);
+				glm::vec3 rotation = glm::degrees(glm::eulerAngles(component.Rotation));
 				DrawVec3Control("Rotation", rotation);
-				component.Rotation = glm::radians(rotation);
+				component.Rotation = glm::quat(glm::radians(rotation));
+				/*glm::vec3 rotation = glm::degrees(component.Rotation);
+				DrawVec3Control("Rotation", rotation);
+				component.Rotation = glm::radians(rotation);*/
 				DrawVec3Control("Scale", component.Scale, 1.0f);
 			});
 
