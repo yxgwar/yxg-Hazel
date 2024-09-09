@@ -20,6 +20,7 @@ namespace Hazel {
 		m_Texture = Texture2D::Create("assets/textures/2.png");
 
 		FrameBufferSpecification fbSpec;
+		fbSpec.Attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
 		fbSpec.Width = 1920;
 		fbSpec.Height = 1080;
 		m_FrameBuffer = FrameBuffer::Create(fbSpec);
