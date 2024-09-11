@@ -46,13 +46,13 @@ namespace Hazel {
 		return nullptr;
 	}
 
-	void BufferLayout::CalculateOffestsAndStride()
+	void BufferLayout::CalculateOffsetsAndStride()
 	{
-		uint32_t offest = 0;
+		uint32_t Offset = 0;
 		m_Stride = 0;
 		for (auto& element : m_Elements) {
-			element.Offest = offest;
-			offest += element.Size;
+			element.Offset = Offset;
+			Offset += element.Size;
 			m_Stride += element.Size;
 		}
 	}

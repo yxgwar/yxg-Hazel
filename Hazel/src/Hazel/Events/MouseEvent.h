@@ -25,22 +25,22 @@ namespace Hazel {
 
 	class MouseScrolledEvent :public Event {
 	public:
-		MouseScrolledEvent(float xOffest, float yOffest)
-			:m_XOffest(xOffest), m_YOffest(yOffest) {}
+		MouseScrolledEvent(float xOffset, float yOffset)
+			:m_XOffset(xOffset), m_YOffset(yOffset) {}
 
-		inline float GetXOffest() const { return m_XOffest; }
-		inline float GetYOffest() const { return m_YOffest; }
+		inline float GetXOffset() const { return m_XOffset; }
+		inline float GetYOffset() const { return m_YOffset; }
 
 		std::string ToString() const override {
 			std::stringstream ss;
-			ss << "MouseScrolledEvent: " << m_XOffest << ", " << m_YOffest;
+			ss << "MouseScrolledEvent: " << m_XOffset << ", " << m_YOffset;
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(MouseScrolled)
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	private:
-		float m_XOffest, m_YOffest;
+		float m_XOffset, m_YOffset;
 	};
 
 	class MouseButtonEvent :public Event {

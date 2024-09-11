@@ -11,6 +11,9 @@ namespace Hazel {
 		glm::vec2 TexCoord;
 		float TexIndex;
 		float TilingFactor;
+		
+		//Editor-only
+		int EntityID;
 	};
 
 	struct Renderer2DData {
@@ -50,7 +53,8 @@ namespace Hazel {
 			{ShaderDataType::Float4, "a_Color"},
 			{ShaderDataType::Float2, "a_TexCoord"},
 			{ShaderDataType::Float, "a_TexIndex"},
-			{ShaderDataType::Float, "a_TilingFactor"}
+			{ShaderDataType::Float, "a_TilingFactor"},
+			{ShaderDataType::Int, "a_EntityID"}
 		});
 		s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
 
@@ -58,18 +62,18 @@ namespace Hazel {
 
 		uint32_t* quadIndices = new uint32_t[s_Data.MaxIndices];
 
-		uint32_t offest = 0;
+		uint32_t Offset = 0;
 		for (uint32_t i = 0; i < s_Data.MaxIndices; i+=6)
 		{
-			quadIndices[i + 0] = offest + 0;
-			quadIndices[i + 1] = offest + 1;
-			quadIndices[i + 2] = offest + 2;
+			quadIndices[i + 0] = Offset + 0;
+			quadIndices[i + 1] = Offset + 1;
+			quadIndices[i + 2] = Offset + 2;
 
-			quadIndices[i + 3] = offest + 2;
-			quadIndices[i + 4] = offest + 3;
-			quadIndices[i + 5] = offest + 0;
+			quadIndices[i + 3] = Offset + 2;
+			quadIndices[i + 4] = Offset + 3;
+			quadIndices[i + 5] = Offset + 0;
 
-			offest += 4; 
+			Offset += 4; 
 		}
 
 		Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
@@ -179,7 +183,7 @@ namespace Hazel {
 		DrawQuad(transform, texture, tilingFactor, tintColor);
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID)
 	{
 		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
 			FlushAndReset();
@@ -195,6 +199,7 @@ namespace Hazel {
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
 			s_Data.QuadVertexBufferPtr++;
 		}
 
@@ -202,7 +207,7 @@ namespace Hazel {
 		s_Data.Stats.QuadCount++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
 	{
 		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
 			FlushAndReset();
@@ -235,6 +240,7 @@ namespace Hazel {
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
 			s_Data.QuadVertexBufferPtr++;
 		}
 
@@ -316,6 +322,11 @@ namespace Hazel {
 
 		s_Data.QuadIndexCount += 6;
 		s_Data.Stats.QuadCount++;
+	}
+
+	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
+	{
+		DrawQuad(transform, src.Color, entityID);
 	}
 
 	void Renderer2D::ResetStats()

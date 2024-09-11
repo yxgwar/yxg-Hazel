@@ -3,6 +3,8 @@
 #include "Scene.h"
 #include "entt.hpp"
 
+#define CH(x) #x
+
 namespace Hazel {
 	class Entity {
 	public:
@@ -20,7 +22,7 @@ namespace Hazel {
 
 		template<typename T>
 		T& GetComponent() {
-			HZ_CORE_ASSERT(HasComponent<T>(), "Entity doesn't have component!");
+			HZ_CORE_ASSERT_WITH_NAME(HasComponent<T>(), "Entity doesn't have component!", typeid(T).name());
 			return m_Scene->m_Registry.get<T>(m_EntityHandle);
 		}
 
