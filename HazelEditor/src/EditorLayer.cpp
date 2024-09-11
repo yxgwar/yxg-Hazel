@@ -101,6 +101,8 @@ namespace Hazel {
 		RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
 		RenderCommand::Clear();
 
+		m_FrameBuffer->ClearAttachment(1, -1);
+
 		//Renderer2D::BeginScene(m_CameraController.GetCamera());
 
 		m_ActiveScene->OnUpdateEditor(ts, m_EditorCamera);
