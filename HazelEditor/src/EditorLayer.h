@@ -1,6 +1,7 @@
 #pragma once
 #include "Hazel.h"
 #include "Panels/SceneHierarchyPanel.h"
+#include "Panels/ContentBrowserPanel.h"
 #include "Hazel/Render/EditorCamera.h"
 
 namespace Hazel {
@@ -48,6 +49,7 @@ namespace Hazel {
 		int m_GizmoType = -1;
 
 		SceneHierarchyPanel m_SceneHierarchyPanel;
+		ContentBrowserPanel m_ContentBrowserPanel;
 	};
 
 }
