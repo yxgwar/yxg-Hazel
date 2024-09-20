@@ -72,6 +72,8 @@ namespace Hazel {
 			else if (Input::IsMouseButtonPressed(Mouse::ButtonRight))
 				MouseZoom(delta.y);
 		}
+		else if(Input::IsKeyPressed(KeyCode::Tab))
+			m_Yaw = m_Pitch = 0.0f;
 
 		UpdateView();
 	}

@@ -6,6 +6,7 @@
 #include "Hazel/Render/Texture.h"
 #include "SceneCamera.h"
 #include "ScriptableEntity.h"
+#include <box2d/id.h>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
@@ -37,6 +38,18 @@ namespace Hazel {
 			return glm::translate(glm::mat4(1.0f), Translation)
 				* glm::mat4_cast(Rotation)
 				* glm::scale(glm::mat4(1.0f), Scale);
+		}
+
+		//Radians
+		glm::vec3 GetEulerAngles() const
+		{
+			return glm::eulerAngles(Rotation);
+		}
+
+		//just for 2d game
+		void SetZRotation(float radians)
+		{
+			Rotation = glm::quat(glm::vec3(0, 0, radians));
 		}
 	};
 
@@ -72,5 +85,38 @@ namespace Hazel {
 			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
 			DestroyScript = [](NativeScriptComponent* nsc) {delete nsc->Instance; nsc->Instance = nullptr; };
 		}
+	};
+
+	struct Rigidbody2DComponent
+	{
+		enum class BodyType
+		{
+			Static = 0,
+			Dynamic,
+			Kinematic
+		};
+		BodyType Type = BodyType::Static;
+		bool FixedRotation = false;
+
+		b2BodyId RuntimeBody = {};
+
+		Rigidbody2DComponent() = default;
+		Rigidbody2DComponent(const Rigidbody2DComponent&) = default;
+	};
+
+	struct BoxCollider2DComponent
+	{
+		glm::vec2 Offset = { 0.0f, 0.0f };
+		glm::vec2 Size = { 0.5f, 0.5f };
+
+		float Density = 1.0f;
+		float Friction = 0.5f;
+		float Restitution = 0.0f;
+		float RestitutionThreshold = 0.5f;
+
+		void* RuntimeFixture = nullptr;
+
+		BoxCollider2DComponent() = default;
+		BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
 	};
 }

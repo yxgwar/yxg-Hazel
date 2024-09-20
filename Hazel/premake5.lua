@@ -34,6 +34,7 @@ project "Hazel"
 		"vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
         "%{IncludeDir.Glad}",
+        "%{IncludeDir.Box2D}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.stb_image}",
@@ -48,7 +49,8 @@ project "Hazel"
 		"Glad",
 		"ImGui",
 		"yaml-cpp",
-		"opengl32.lib"
+		"opengl32.lib",
+		"Box2D"
 	}
 
 	filter "files:vendor/ImGuizmo/**.cpp"
