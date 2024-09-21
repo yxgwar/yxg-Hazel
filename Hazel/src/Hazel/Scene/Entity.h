@@ -2,8 +2,8 @@
 
 #include "Scene.h"
 #include "entt.hpp"
-
-#define CH(x) #x
+#include "Hazel/Core/UUID.h"
+#include "Components.h"
 
 namespace Hazel {
 	class Entity {
@@ -40,6 +40,8 @@ namespace Hazel {
 		operator bool() const { return m_EntityHandle != entt::null; }
 		operator uint32_t() const { return static_cast<uint32_t>(m_EntityHandle); }
 		operator entt::entity() const { return m_EntityHandle; }
+
+		UUID GetUUID() { return GetComponent<IDComponent>().ID; }
 
 		bool operator==(const Entity& other) const { return m_EntityHandle == other.m_EntityHandle || m_Scene == other.m_Scene; }
 		bool operator!=(const Entity& other) const { return !(*this == other); }

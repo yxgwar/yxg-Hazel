@@ -1,17 +1,25 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include "Hazel/Render/Camera.h"
 #include "Hazel/Render/Texture.h"
 #include "SceneCamera.h"
-#include "ScriptableEntity.h"
+#include "Hazel/Core/UUID.h"
+
 #include <box2d/id.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
 namespace Hazel {
+	struct IDComponent
+	{
+		UUID ID;
+
+		IDComponent() = default;
+		IDComponent(const IDComponent&) = default;
+	};
+
 	struct TagComponent {
 		std::string Tag;
 		TagComponent() = default;
@@ -74,6 +82,7 @@ namespace Hazel {
 		CameraComponent(const CameraComponent&) = default;
 	};
 
+	class ScriptableEntity;
 	struct NativeScriptComponent {
 		ScriptableEntity* Instance = nullptr;
 

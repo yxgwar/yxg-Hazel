@@ -3,6 +3,7 @@
 #include <entt.hpp>
 #include "Hazel/Core/Timestep.h"
 #include "Hazel/Render/EditorCamera.h"
+#include "Components.h"
 #include <box2d/id.h>
 
 namespace Hazel {
@@ -16,6 +17,7 @@ namespace Hazel {
 		~Scene();
 
 		Entity CreateEntity(const std::string& name = "Entity");
+		Entity CreateEntityWithUUID(UUID uuid, const std::string& name = "Entity");
 		void DestroyEntity(Entity entity);
 
 		void OnRuntimeStart();
