@@ -33,50 +33,6 @@ namespace Hazel {
 
 		m_EditorCamera = EditorCamera(30.0f, 16.0f / 9.0f, 0.1f, 1000.0f);
 
-#if 0
-		auto square = m_ActiveScene->CreateEntity("Square");
-		square.AddComponent<SpriteRendererComponent>(glm::vec4{ 0.0f, 0.2f, 0.8f, 1.0f });
-
-		auto redsquare = m_ActiveScene->CreateEntity("RedSquare");
-		redsquare.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f, 0.0f, 0.0f, 1.0f });
-		
-		m_SquareEntity = square;
-
-		m_CameraEntity = m_ActiveScene->CreateEntity("Camera A");
-		m_CameraEntity.AddComponent<CameraComponent>();
-
-		m_SecondCamera = m_ActiveScene->CreateEntity("Camera B");
-		auto& cc = m_SecondCamera.AddComponent<CameraComponent>();
-		cc.Primary = false;
-
-		class CameraController :public ScriptableEntity {
-		public:
-			void OnCreate() 
-			{
-			}
-
-			void OnDestroy() 
-			{
-			}
-
-			void OnUpdate(Timestep ts) 
-			{
-				auto& translation = GetComponent<TransformComponent>().Translation;
-				float speed = 5.0f;
-				if (Input::IsKeyPressed(KeyCode::W))
-					translation.y += speed * ts;
-				if (Input::IsKeyPressed(KeyCode::A))
-					translation.x -= speed * ts;
-				if (Input::IsKeyPressed(KeyCode::S))
-					translation.y -= speed * ts;
-				if (Input::IsKeyPressed(KeyCode::D))
-					translation.x += speed * ts;
-			}
-		};
-		m_SecondCamera.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-		m_CameraEntity.AddComponent<NativeScriptComponent>().Bind<CameraController>();
-#endif
-
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 	}
 
@@ -370,8 +326,13 @@ namespace Hazel {
 		{
 		case (int)KeyCode::S:
 		{
-			if (control && shift)
-				SaveSceneAs();
+			if (control)
+			{
+				if(shift)
+					SaveSceneAs();
+				else
+					SaveScene();
+			}
 			break;
 		}
 		case (int)KeyCode::O:
@@ -384,6 +345,12 @@ namespace Hazel {
 		{
 			if (control)
 				NewScene();
+			break;
+		}
+		case (int)KeyCode::D:
+		{
+			if (control)
+				OnDuplicateEntity();
 			break;
 		}
 
@@ -420,6 +387,7 @@ namespace Hazel {
 		m_ActiveScene = CreateRef<Scene>();
 		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
 		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+		m_EditorScenePath = std::filesystem::path();
 	}
 	
 	void EditorLayer::OpenScene()
@@ -433,12 +401,34 @@ namespace Hazel {
 
 	void EditorLayer::OpenScene(const std::filesystem::path& path)
 	{
-		m_ActiveScene = CreateRef<Scene>();
-		m_ActiveScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
-		m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+		if (m_SceneState != SceneState::Edit)
+			OnSceneStop();
 
-		SceneSerializer serializer(m_ActiveScene);
-		serializer.DeSerialize(path.string());
+		if (path.extension().string() != ".hazel")
+		{
+			HZ_WARN("{0} is not a hazel scene file", path.filename().string());
+			return;
+		}
+
+		Ref<Scene> newScene = CreateRef<Scene>();
+		SceneSerializer serializer(newScene);
+		if (serializer.DeSerialize(path.string()))
+		{
+			m_EditorScene = newScene;
+			m_EditorScene->OnViewportResize((uint32_t)m_ViewportSize.x, (uint32_t)m_ViewportSize.y);
+			m_SceneHierarchyPanel.SetContext(m_EditorScene);
+			m_ActiveScene = m_EditorScene;
+
+			m_EditorScenePath = path;
+		}
+	}
+
+	void EditorLayer::SaveScene()
+	{
+		if (!m_EditorScenePath.empty())
+			SerializeScene(m_ActiveScene, m_EditorScenePath);
+		else
+			SaveSceneAs();
 	}
 	
 	void EditorLayer::SaveSceneAs()
@@ -446,20 +436,43 @@ namespace Hazel {
 		std::string filepath = FileDialogs::SaveFile("Hazel Scene (*.hazel)\0*.hazel\0");
 		if (!filepath.empty())
 		{
-			SceneSerializer serializer(m_ActiveScene);
-			serializer.Serialize(filepath);
+			SerializeScene(m_ActiveScene, filepath);
+
+			m_EditorScenePath = filepath;
 		}
+	}
+
+	void EditorLayer::SerializeScene(Ref<Scene> scene, const std::filesystem::path& path)
+	{
+		SceneSerializer serializer(scene);
+		serializer.Serialize(path.string());
 	}
 
 	void EditorLayer::OnScenePlay()
 	{
 		m_SceneState = SceneState::Play;
+
+		m_ActiveScene = Scene::Copy(m_EditorScene);
 		m_ActiveScene->OnRuntimeStart();
+
+		//m_SceneHierarchyPanel.SetContext(m_ActiveScene);
 	}
 
 	void EditorLayer::OnSceneStop()
 	{
 		m_SceneState = SceneState::Edit;
 		m_ActiveScene->OnRuntimeStop();
+		m_ActiveScene = m_EditorScene;
+
+		//m_SceneHierarchyPanel.SetContext(m_ActiveScene);
+	}
+
+	void EditorLayer::OnDuplicateEntity()
+	{
+		if (m_SceneState != SceneState::Edit)
+			return;
+		Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+		if (selectedEntity)
+			m_EditorScene->DuplicateEntity(selectedEntity);
 	}
 }

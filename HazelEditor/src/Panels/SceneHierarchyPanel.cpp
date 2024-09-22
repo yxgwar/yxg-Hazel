@@ -23,30 +23,33 @@ namespace Hazel {
 	void SceneHierarchyPanel::OnImGuiRender()
 	{
 		ImGui::Begin("Scene Hierarchy");
-
-		m_Context->m_Registry.view<entt::entity>().each([&](auto entityID)
-			{
-				Entity entity{ entityID, m_Context.get() };
-				DrawEntityNode(entity);
-			}
-		);
-
-		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
-			m_SelectionContext = {};
-
-		if (ImGui::BeginPopupContextWindow(0, 1 | ImGuiPopupFlags_NoOpenOverItems))
+		if (m_Context)
 		{
-			if (ImGui::MenuItem("Create Empty Entity"))
-			{
-				m_Context->CreateEntity("Empty Entity");
-			}
-			ImGui::EndPopup();
-		}
 
+			m_Context->m_Registry.view<entt::entity>().each([&](auto entityID)
+				{
+					Entity entity{ entityID, m_Context.get() };
+					DrawEntityNode(entity);
+				}
+			);
+
+			if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
+				m_SelectionContext = {};
+
+			if (ImGui::BeginPopupContextWindow(0, 1 | ImGuiPopupFlags_NoOpenOverItems))
+			{
+				if (ImGui::MenuItem("Create Empty Entity"))
+				{
+					m_Context->CreateEntity("Empty Entity");
+				}
+				ImGui::EndPopup();
+			}
+
+		}
 		ImGui::End();
 
 		ImGui::Begin("Properties");
-		
+
 		if (m_SelectionContext)
 			DrawComponents(m_SelectionContext);
 
