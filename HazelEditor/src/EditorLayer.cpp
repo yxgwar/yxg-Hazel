@@ -392,6 +392,9 @@ namespace Hazel {
 	
 	void EditorLayer::OpenScene()
 	{
+		if (m_SceneState != SceneState::Edit)
+			OnSceneStop();
+
 		std::string filepath = FileDialogs::OpenFile("Hazel Scene (*.hazel)\0*.hazel\0");
 		if (!filepath.empty())
 		{
