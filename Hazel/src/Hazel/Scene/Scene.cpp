@@ -82,6 +82,7 @@ namespace Hazel {
 		CopyComponent<CameraComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<Rigidbody2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<BoxCollider2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
+		CopyComponent<CircleCollider2DComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 		CopyComponent<NativeScriptComponent>(dstSceneRegistry, srcSceneRegistry, enttMap);
 
 		return newScene;
@@ -140,6 +141,19 @@ namespace Hazel {
 				shapeDef.friction = bc2d.Friction;
 				shapeDef.restitution = bc2d.Restitution;
 				b2CreatePolygonShape(groundId, &shapeDef, &box);
+			}
+			if (entity.HasComponent<CircleCollider2DComponent>())
+			{
+				auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
+				b2Circle circle;
+				circle.center = { cc2d.Offset.x, cc2d.Offset.y };
+				circle.radius = cc2d.Radius;
+
+				b2ShapeDef shapeDef = b2DefaultShapeDef();
+				shapeDef.density = cc2d.Density;
+				shapeDef.friction = cc2d.Friction;
+				shapeDef.restitution = cc2d.Restitution;
+				b2CreateCircleShape(groundId, &shapeDef, &circle);
 			}
 		}
 	}
@@ -273,6 +287,7 @@ namespace Hazel {
 		CopyComponentIfExists<CameraComponent>(newEntity, entity);
 		CopyComponentIfExists<Rigidbody2DComponent>(newEntity, entity);
 		CopyComponentIfExists<BoxCollider2DComponent>(newEntity, entity);
+		CopyComponentIfExists<CircleCollider2DComponent>(newEntity, entity);
 		CopyComponentIfExists<NativeScriptComponent>(newEntity, entity);
 	}
 
@@ -338,6 +353,11 @@ namespace Hazel {
 
 	template<>
 	void Scene::OnComponentAdded<BoxCollider2DComponent>(Entity entity, BoxCollider2DComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<CircleCollider2DComponent>(Entity entity, CircleCollider2DComponent& component)
 	{
 	}
 }
