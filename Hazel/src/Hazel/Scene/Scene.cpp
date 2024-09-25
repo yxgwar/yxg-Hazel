@@ -147,7 +147,7 @@ namespace Hazel {
 				auto& cc2d = entity.GetComponent<CircleCollider2DComponent>();
 				b2Circle circle;
 				circle.center = { cc2d.Offset.x, cc2d.Offset.y };
-				circle.radius = cc2d.Radius;
+				circle.radius = cc2d.Radius * transform.Scale.x;
 
 				b2ShapeDef shapeDef = b2DefaultShapeDef();
 				shapeDef.density = cc2d.Density;
